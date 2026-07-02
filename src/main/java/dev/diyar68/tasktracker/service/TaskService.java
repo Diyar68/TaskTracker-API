@@ -1,0 +1,95 @@
+package dev.diyar68.tasktracker.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import dev.diyar68.tasktracker.entity.TaskStatus;
+import dev.diyar68.tasktracker.repository.TaskRepository;
+import dev.diyar68.tasktracker.entity.Task;
+
+@Service
+public class TaskService {
+
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+    
+    public void createTask(String description) {
+        if(description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Description cannot be empty");
+        }
+
+        taskRepository.save(new Task(description));
+    }
+
+    public void deleteTask(Long id) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        if (!taskRepository.existsById(id)) {
+            throw new IllegalArgumentException("This task does not exist");
+        }
+
+        taskRepository.deleteById(id);
+    }
+
+    public void updateTask(Long id, String description) {
+
+        if(description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Description cannot be empty");
+        }
+
+        Optional<Task> taskOptional = taskRepository.findById(id);
+
+        if (taskOptional.isEmpty()) {
+            throw new IllegalArgumentException("This task does not exist");
+        }
+
+        Task task = taskOptional.get();
+
+        task.setDescription(description);
+
+        taskRepository.save(task);
+    }
+
+    private void changeStatus(Long id, TaskStatus status) {
+        Optional<Task> taskOptional = taskRepository.findById(id);
+
+        if (taskOptional.isEmpty()) {
+            throw new IllegalArgumentException("This task does not exist");
+        }
+
+        Task task = taskOptional.get();
+
+        task.setStatus(status);
+
+        taskRepository.save(task);
+    }
+
+    public void markInProgress(Long id) {
+        changeStatus(id, TaskStatus.IN_PROGRESS);
+    }
+
+    public void markDone(Long id) {
+        changeStatus(id, TaskStatus.DONE);
+    }
+
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
+    public List<Task> getTasksByStatus(TaskStatus status) {
+
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+        
+        return taskRepository.findByStatus(status);
+    }
+}
