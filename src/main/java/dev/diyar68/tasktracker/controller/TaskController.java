@@ -3,6 +3,8 @@ package dev.diyar68.tasktracker.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.diyar68.tasktracker.dto.CreateTaskRequest;
+import dev.diyar68.tasktracker.dto.UpdateTaskRequest;
 import dev.diyar68.tasktracker.entity.Task;
 import dev.diyar68.tasktracker.service.TaskService;
 
@@ -35,13 +37,13 @@ public class TaskController {
     }
 
     @PostMapping
-    public void createTask(@RequestBody String description) {
-        taskService.createTask(description);
+    public void createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+        taskService.createTask(createTaskRequest.getDescription());
     }
 
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable Long id, @RequestBody String description) {
-        taskService.updateTask(id, description);
+    public void updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest updateTaskRequest) {
+        taskService.updateTask(id, updateTaskRequest.getDescription());
     }
 
     @DeleteMapping("/{id}")
