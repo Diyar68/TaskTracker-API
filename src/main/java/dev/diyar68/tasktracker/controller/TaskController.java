@@ -4,8 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.diyar68.tasktracker.dto.CreateTaskRequest;
+import dev.diyar68.tasktracker.dto.TaskResponse;
 import dev.diyar68.tasktracker.dto.UpdateTaskRequest;
 import dev.diyar68.tasktracker.entity.Task;
+import dev.diyar68.tasktracker.mapper.TaskMapper;
 import dev.diyar68.tasktracker.service.TaskService;
 
 import java.util.List;
@@ -26,24 +28,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class TaskController {
     
     private final TaskService taskService;
+    private final TaskMapper taskMapper;
     
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, TaskMapper taskMapper) {
         this.taskService = taskService;
+        this.taskMapper = taskMapper;
     }
 
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public List<TaskResponse> getAllTasks() {
+        return taskMapper.toResponseList(taskService.getAllTasks());
     }
 
     @PostMapping
-    public void createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        taskService.createTask(createTaskRequest.getDescription());
+    public TaskResponse createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+        Task task = taskService.createTask(createTaskRequest.getDescription());
+        return taskMapper.toResponse(task);
     }
 
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest updateTaskRequest) {
-        taskService.updateTask(id, updateTaskRequest.getDescription());
+    public TaskResponse updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest updateTaskRequest) {
+        Task task = taskService.updateTask(id, updateTaskRequest.getDescription());
+        return taskMapper.toResponse(task);
     }
 
     @DeleteMapping("/{id}")
@@ -52,12 +58,14 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/done")
-    public void markDone(@PathVariable Long id) {
-        taskService.markDone(id);
+    public TaskResponse markDone(@PathVariable Long id) {
+        Task task = taskService.markDone(id);
+        return taskMapper.toResponse(task);
     }
 
     @PatchMapping("/{id}/in-progress")
-    public void markInProgress(@PathVariable Long id) {
-        taskService.markInProgress(id);
+    public TaskResponse markInProgress(@PathVariable Long id) {
+        Task task = taskService.markInProgress(id);
+        return taskMapper.toResponse(task);
     }
 }

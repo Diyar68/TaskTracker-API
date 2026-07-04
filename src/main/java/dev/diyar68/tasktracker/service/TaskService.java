@@ -18,12 +18,12 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
     
-    public void createTask(String description) {
+    public Task createTask(String description) {
         if(description == null || description.isBlank()) {
             throw new IllegalArgumentException("Description cannot be empty");
         }
 
-        taskRepository.save(new Task(description));
+        return taskRepository.save(new Task(description));
     }
 
     public void deleteTask(Long id) {
@@ -39,7 +39,7 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public void updateTask(Long id, String description) {
+    public Task updateTask(Long id, String description) {
 
         if(description == null || description.isBlank()) {
             throw new IllegalArgumentException("Description cannot be empty");
@@ -55,10 +55,10 @@ public class TaskService {
 
         task.setDescription(description);
 
-        taskRepository.save(task);
+        return taskRepository.save(task);
     }
 
-    private void changeStatus(Long id, TaskStatus status) {
+    private Task changeStatus(Long id, TaskStatus status) {
         Optional<Task> taskOptional = taskRepository.findById(id);
 
         if (taskOptional.isEmpty()) {
@@ -69,15 +69,15 @@ public class TaskService {
 
         task.setStatus(status);
 
-        taskRepository.save(task);
+        return taskRepository.save(task);
     }
 
-    public void markInProgress(Long id) {
-        changeStatus(id, TaskStatus.IN_PROGRESS);
+    public Task markInProgress(Long id) {
+        return changeStatus(id, TaskStatus.IN_PROGRESS);
     }
 
-    public void markDone(Long id) {
-        changeStatus(id, TaskStatus.DONE);
+    public Task markDone(Long id) {
+        return changeStatus(id, TaskStatus.DONE);
     }
 
     public List<Task> getAllTasks() {
