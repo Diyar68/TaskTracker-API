@@ -19,10 +19,6 @@ public class TaskService {
     }
     
     public Task createTask(String description) {
-        if(description == null || description.isBlank()) {
-            throw new IllegalArgumentException("Description cannot be empty");
-        }
-
         return taskRepository.save(new Task(description));
     }
 
@@ -40,11 +36,6 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, String description) {
-
-        if(description == null || description.isBlank()) {
-            throw new IllegalArgumentException("Description cannot be empty");
-        }
-
         Optional<Task> taskOptional = taskRepository.findById(id);
 
         if (taskOptional.isEmpty()) {

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import jakarta.validation.Valid;
 
 
 
@@ -41,13 +42,13 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskResponse createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+    public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
         Task task = taskService.createTask(createTaskRequest.getDescription());
         return taskMapper.toResponse(task);
     }
 
     @PutMapping("/{id}")
-    public TaskResponse updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest updateTaskRequest) {
+    public TaskResponse updateTask(@PathVariable Long id,@Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
         Task task = taskService.updateTask(id, updateTaskRequest.getDescription());
         return taskMapper.toResponse(task);
     }
