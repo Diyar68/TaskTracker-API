@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import dev.diyar68.tasktracker.entity.TaskStatus;
+import dev.diyar68.tasktracker.exception.TaskNotFoundException;
 import dev.diyar68.tasktracker.repository.TaskRepository;
 import dev.diyar68.tasktracker.entity.Task;
 
@@ -29,17 +30,22 @@ public class TaskService {
         }
 
         if (!taskRepository.existsById(id)) {
-            throw new IllegalArgumentException("This task does not exist");
+            throw new TaskNotFoundException(id);
         }
 
         taskRepository.deleteById(id);
     }
 
     public Task updateTask(Long id, String description) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
         Optional<Task> taskOptional = taskRepository.findById(id);
 
         if (taskOptional.isEmpty()) {
-            throw new IllegalArgumentException("This task does not exist");
+            throw new TaskNotFoundException(id);
         }
 
         Task task = taskOptional.get();
@@ -50,10 +56,19 @@ public class TaskService {
     }
 
     private Task changeStatus(Long id, TaskStatus status) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+
         Optional<Task> taskOptional = taskRepository.findById(id);
 
         if (taskOptional.isEmpty()) {
-            throw new IllegalArgumentException("This task does not exist");
+            throw new TaskNotFoundException(id);
         }
 
         Task task = taskOptional.get();
