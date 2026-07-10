@@ -130,7 +130,7 @@ Example:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Diyar68/TaskTracker-API.git
+git clone https://github.com/Diyar68/TaskTracker.git
 ```
 
 ### 2. Start PostgreSQL
