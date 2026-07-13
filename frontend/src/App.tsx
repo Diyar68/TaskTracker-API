@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import TaskList from "./components/TaskList";
 import { getTasks } from "./services/taskService";
 import type { Task } from "./types/Task";
 
 function App() {
-
   const [tasks, setTasks] = useState<Task[]>([]);
-  
+
   useEffect(() => {
     async function loadTasks() {
       try {
@@ -23,17 +23,7 @@ function App() {
     <>
       <h1>TaskTracker</h1>
 
-      {tasks.map((task) => (
-        <div key={task.id}>
-          <h3>{task.description}</h3>
-
-          <p>Status: {task.status}</p>
-
-          <small>
-            Created: {task.createdAt}
-          </small>
-        </div>
-      ))}
+      <TaskList tasks={tasks} />
     </>
   );
 }
