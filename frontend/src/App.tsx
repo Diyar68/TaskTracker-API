@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
-import { getTasks } from "./services/taskService";
+import { createTask, getTasks } from "./services/taskService";
 import type { Task } from "./types/Task";
 
 function App() {
@@ -19,9 +20,17 @@ function App() {
     void loadTasks();
   }, []);
 
+  async function handleCreateTask(description: string) {
+    const createdTask = await createTask(description);
+
+    setTasks((currentTasks) => [...currentTasks, createdTask]);
+  }
+
   return (
     <>
       <h1>TaskTracker</h1>
+
+      <TaskForm onCreateTask={handleCreateTask} />
 
       <TaskList tasks={tasks} />
     </>
